@@ -41,6 +41,36 @@ int ctoi(char c) {
   return 0;
 }
 
+// 1に挟まれた0を1に変換する関数zero_to_one
+// 更新後の数値は別の配列に保存
+void zero_to_one(int karival[][MAX_COL],int nval[][MAX_COL]){
+  for(int i=0; i<MAX_ROW; i++){
+    for(int j=0; j<MAX_COL; j++){
+      nval[i][j] = karival[i][j];//nvalにkarivalを代入
+    }
+  }
+
+  for(int i=0; i<MAX_ROW; i++){
+    for (int j=0; j<MAX_COL; j++){
+      if ( karival[i][j] == 0 && j-1 >= 0 && j+1 < MAX_COL ){
+        if ( ( karival[i][j-1] + karival[i][j+1] ) == 2 ){//横で挟んだとき
+          nval[i][j] = 1;
+        }
+      }
+      if ( karival[i][j] == 0 && i-1 >= 0 && i+1 < MAX_ROW ){
+        if ( ( karival[i-1][j] + karival[i+1][j] ) == 2 ){//縦で挟んだとき
+          nval[i][j] = 1;
+        }
+      }
+      if ( karival[i][j] == 0 && j-1 >= 0 && j+1 <MAX_COL && i-1 >=0 && i+1 < MAX_ROW ){//縦の端じゃないかつ横の端じゃないとき
+        if( ( karival[i-1][j-1] + karival[i+1][j+1] ) == 2 || ( karival[i-1][j+1] + karival[i+1][j-1] ) == 2 ){//斜めで挟んだ時 
+          nval[i][j] = 1;
+        }
+      }
+    }
+  }
+}
+
 /* メイン関数：引数をとる */
 int main(int argc, char** argv)
 {
@@ -86,6 +116,7 @@ int main(int argc, char** argv)
 
   // 入力テキスト:ipathを読み込み配列に格納
   int val[MAX_ROW][MAX_COL] = { { 0 } };
+  int nval[MAX_ROW][MAX_COL] = { { 0 } };
   FILE* fp = fopen(ipath, "r");
   if(fp == NULL) {
     printf("%s file not open!\n", ipath);
@@ -100,36 +131,10 @@ int main(int argc, char** argv)
     i++;
   }
   fclose(fp);
+ 
+  zero_to_one(val,nval);//0を1に変換する関数
 
-  // 1に挟まれた0を1に変換する処理
-  // 更新後の数値は別の配列に保存
-  int nval[MAX_ROW][MAX_COL] = { { 0 } };
-  for( i=0; i<MAX_ROW; i++){
-    for( j=0; j<MAX_COL; j++){
-      nval[i][j] = val[i][j];
-    }
-  }
-
-  for( i=0; i<MAX_ROW; i++){
-    for (j=0; j<MAX_COL; j++){
-      if ( val[i][j] == 0 && j-1 >= 0 && j+1 < MAX_COL ){
-        if ( ( val[i][j-1] + val[i][j+1] ) == 2 ){//横で挟んだとき
-          nval[i][j] = 1;
-        }
-      }
-      if ( val[i][j] == 0 && i-1 >= 0 && i+1 < MAX_ROW ){
-        if ( ( val[i-1][j] + val[i+1][j] ) == 2 ){//縦で挟んだとき
-          nval[i][j] = 1;
-        }
-      }
-      if ( val[i][j] == 0 && j-1 >= 0 && j+1 <MAX_COL && i-1 >=0 && i+1 < MAX_ROW ){//縦の端じゃないかつ横の端じゃないとき
-        if( ( val[i-1][j-1] + val[i+1][j+1] ) == 2 || ( val[i-1][j+1] + val[i+1][j-1] ) == 2 ){ 
-          nval[i][j] = 1;
-        }
-      }
-    }
-  }
-  FILE* wfp = fopen(opath, "w");
+  FILE* wfp = fopen(opath, "w");//ファイル読み込み
   if( wfp == NULL) {
     printf("%s file not open!\n", opath);
     return -1;
@@ -137,7 +142,7 @@ int main(int argc, char** argv)
   for( i=0; i<MAX_ROW; i++){
     for( j=0; j<MAX_COL; j++){
       printf("%d,", nval[i][j]);
-      fprintf(wfp, "%d", nval[i][j]);
+      fprintf(wfp, "%d", nval[i][j]);//ファイルに出力する.
     }
     printf("\n");
     fprintf(wfp, "\n");
