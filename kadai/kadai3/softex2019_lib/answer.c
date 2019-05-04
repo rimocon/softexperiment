@@ -1,10 +1,9 @@
 #include "header.h"
 
-extern int i;
-extern int j;
 extern int item_num;
 extern int threshold;
 int answer(void){//回答部分
+  int i,j;
   int max_vote = 0;
   int max_kouho = -1;
   for(i=0; i<item_num; i++)

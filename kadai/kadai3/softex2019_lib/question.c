@@ -4,7 +4,7 @@ extern int j;
 extern int item_num;
 extern int threshold;
 
-int question(void){
+void question(void){
   /*乱数初期化*/
   srand(time(NULL));
   item_num = i;

@@ -26,7 +26,7 @@ int read_database(void);
 
 int kouho[MAX_LENGTH][5];
 
-int question(void);
+void question(void);
 
 int answer(void);
 #endif
