@@ -4,7 +4,7 @@ FUNCS1 = read_database.c question.c answer.c
 OBJS1 = main.o read_database.o question.o answer.o
 LFLAG = -lm
 
-main: $(SRC) $(FUNCS1)
+main: $(OBJS1)
 
 	$(CC) -o $@ $(OBJS1) $(LFLAG)
 

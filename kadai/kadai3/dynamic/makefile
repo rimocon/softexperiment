@@ -3,7 +3,7 @@ CC=gcc
 AR=ar
 AROPS=rcs
 MAIN=main.c
-SRCS=func1.c func2.c
+SRCS=read_database.c question.c answer.c
 LIBNAME=func
 
 all: $(LIBNAME) $(TARGET)

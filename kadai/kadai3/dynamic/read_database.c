@@ -1,11 +1,12 @@
 #include "header.h"
+extern int i;
+extern int j;
 int read_database(void){// データベースファイルを読み込んで構造体の配列に格納する関数
   FILE* fp = fopen("./database.csv", "r");
   if ( fp == NULL ){
     printf("database file open error.\n");
     return -1;
   }
-  int i,j;
   char line[CN];//最初の列読み込み用
   int id;//ID
   char sex;//性別
