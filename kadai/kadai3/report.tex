@@ -1,0 +1,79 @@
+\documentclass{jarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{listings,jlisting} %日本語のコメントアウトをする場合jlistingが必要
+%ここからソースコードの表示に関する設定
+\lstset{
+  basicstyle={\ttfamily},
+  identifierstyle={\small},
+  commentstyle={\smallitshape},
+  keywordstyle={\small\bfseries},
+  ndkeywordstyle={\small},
+  stringstyle={\small\ttfamily},
+  frame={tb},
+  breaklines=true,
+  columns=[l]{fullflexible},
+  numbers=left,
+  xrightmargin=0zw,
+  xleftmargin=3zw,
+  numberstyle={\scriptsize},
+  stepnumber=1,
+  numbersep=1zw,
+  lineskip=-0.5ex
+}
+\title{ソフトウェア設計及び実験第三回レポート\\}
+\author{6119019056 山口力也}
+\date{2019/05/07日提出}
+
+
+\begin{document}
+\maketitle
+\section{ライブラリの実用例}
+ライブラリの実用例を1つ調べ,それについて文章でまとめ,自作のプログラムにどうようにしようしたいか1000字程度で作文せよ.
+
+自分は高専時代に機械学習を勉強していたので,そこで用いたライブラリをいくつか挙げたいと思う
+
+\begin{itemize}
+
+\item Numpy
+\item Matpplotlib
+\item Keras
+
+\end{itemize}
+
+まずはNumpyについて説明する.Numpyは,Pythonにおいて数値計算を効率的に行うためのライブラリである.厳密にいうとモジュールに当たる.効率的な数値計算を行うための型付きの多次元配列（例えばベクトルや行列などを表現できる）のサポートをPythonに加えるとともに,それらを操作するための大規模な高水準の数学関数ライブラリを提供している.
+Pythonは動的型付け言語であるため,プログラムを柔軟に記述できる一方で純粋にPythonのみを使って数値計算を行うと,ほとんどの場合C言語やJavaなどの静的型付き言語で書いたコードに比べて大幅に計算時間がかかる.そこでNumPyは,Pythonに対して型付きの多次元配列オブジェクト (numpy.ndarray) と,その配列に対する多数の演算関数や操作関数を提供することにより,この問題を解決しようとしている.NumPyの内部はC言語 (およびFortran)によって実装されているため非常に高速に動作する.したがって,目的の処理を,大きな多次元配列（ベクトル・行列など）に対する演算として記述できれば（ベクトル化できれば）,計算時間の大半はPythonではなくC言語によるネイティブコードで実行されるようになり大幅に高速化する.さらに、NumPyは BLAS APIを実装した行列演算ライブラリ (OpenBLAS, ATLAS, Intel Math Kernel Library など)を使用して線形代数演算を行うため,C言語で単純に書いた線形代数演算よりも高速に動作する.
+次にMatplotlibについて説明する.Matplotlibは,Pythonおよびその科学計算用ライブラリNumPyのためのグラフ描画ライブラリである.オブジェクト指向のAPIを提供しており,様々な種類のグラフを描画する能力を持つ.描画できるのは主に2次元のプロットだが,3次元プロットの機能も追加されてきている.
+自分は,gnuplotしか用いたことがなかったので最初にこのライブラリを使った時は便利すぎて驚いた.卒論のグラフ画像などにも利用した.
+最後にKerasについて説明する.Kerasは,Pythonで書かれたオープンソースニューラルネットワークライブラリである.MXNet（英語版）,Deeplearning4j,TensorFlow,CNTK,Theano（英語版）の上部で動作することができる.ディープニューラルネットワークを用いた迅速な実験を可能にするよう設計され,最小限,モジュール式,拡張可能であることに重点が置かれている.
+Kerasはどちらかというとライブラリというよりフレームワークの方が近い気がするが,自分のようなPython初学者でもコードを記述しやすく理解しやすいライブラリである.機械学習を組み込みたいときは上記の3つKeras,Matplotlib,Numpyは必須だと思われる.
+
+\section{Makefileについて}
+Makefileについて,講義で紹介した機能以外のものについて2つ以上調べて説明せよ.
+
+
+\begin{itemize}
+
+\item include
+\item SOURCES
+
+\end{itemize}
+まずはincludeから説明する.インクルードパスとしてINCLUDEの値を用いる.初期値は-I./includeとなっている. ソースファイル中の#includeファイル検索パスに加えるパスを-Iオプションにて指定する.-Iオプションとディレクトリ名の間に空白を書くことはできない. 複数ディレクトリを指定したい場合は-Iオプションを空白区切りで複数指定する.
+次にSOURCESについて説明する.コンパイル対象となるソースファイルとしてSOURCESの値を用いる。初期値は\$(wildcard \$(SRCDIR)/*.cpp)。 SRCDIRに存在する拡張子cppのファイル全てをコンパイル対象とすることを意味する。別の拡張子(.cなど)に変更したい場合は、makefile内のcppを全て変更する。
+
+\section{make以外のビルドツールについて}
+1つ以上調べて,makeとの違い・優れている点などを説明せよ.Autotoolsについて調べたので説明する.Autotoolsとは,主にUnix系オペレーティングシステム (OS) においてソフトウェアパッケージ開発を行うための,ツール及びフレームワークの一種である.このツールを使用することにより,多種多様なUNIX互換環境にパッケージを対応させることが容易になる. Autotoolsは主に autoconf/automake/libtools の3つから成り立っている.
+makeと比べた利点としては
+
+\begin{itemize}
+
+\item 自動的に依存関係を生成できる.
+\item 複数のOS(プラットフォーム)をカバーしやすい.
+\item デフォルトでclean,install,distなどの標準的なターゲットが生成される.
+
+\end{itemize}
+
+などがあげられる.
+
+\section{サンプルプログラムの分割}
+サンプルプログラム(著者当てプログラム)について,以下の機能をmainから分離し,プログラムの分割をせよ.
+
