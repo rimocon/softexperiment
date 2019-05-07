@@ -1,0 +1,34 @@
+\documentclass{jarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{listings,jlisting} %日本語のコメントアウトをする場合jlistingが必要
+%ここからソースコードの表示に関する設定
+\lstset{
+  basicstyle={\ttfamily},
+  identifierstyle={\small},
+  commentstyle={\smallitshape},
+  keywordstyle={\small\bfseries},
+  ndkeywordstyle={\small},
+  stringstyle={\small\ttfamily},
+  frame={tb},
+  breaklines=true,
+  columns=[l]{fullflexible},
+  numbers=left,
+  xrightmargin=0zw,
+  xleftmargin=3zw,
+  numberstyle={\scriptsize},
+  stepnumber=1,
+  numbersep=1zw,
+  lineskip=-0.5ex
+}
+\title{ソフトウェア設計及び実験\\
+第4回レポート}
+\author{6119019056 山口力也}
+\date{2019/05/07日提出}
+
+
+\begin{document}
+\maketitle
+\section{静止画に対する画像処理}
+image_cv.cを参考に,画像の左半分の領域のみ色を変換し,表示させるプログラム
+
+
