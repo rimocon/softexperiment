@@ -21,7 +21,7 @@
 /*________ DEFINITIONS ____________________________________________________*/
 #define CV_DISP_WIDTH   320 // 画面サイズ(横)
 #define CV_DISP_HEIGHT  240 // 画面サイズ(縦)
-#define THRESHOLD	127     //	2値化の際の閾値
+#define THRESHOLD	127 //	2値化の際の閾値
 #define THRESHOLD_MAX_VALUE	255     //	2値化の際に使用する最大値
 #define LINE_THICKNESS	1	//	線の太さ
 #define	LINE_TYPE	8		//	線の種類
@@ -78,7 +78,9 @@ int main(int argc, char **argv)
    cvNamedWindow( windowNameBinaryTemplate,CV_WINDOW_AUTOSIZE);
 
    cvShowImage( windowNameTemplate,templateImage);
+   cvSaveImage("success-temp-color.png",templateImage,0);
    cvShowImage( windowNameBinaryTemplate,templateBinaryImage);
+   cvSaveImage("success-temp-mono.png",templateBinaryImage,0);
    // カメラからフレームをキャプチャ
    while (1) {
       frame = cvQueryFrame(capture);
@@ -112,8 +114,10 @@ int main(int argc, char **argv)
             );
       //キャプチャ映像の表示
       cvShowImage("Capture", frame);
+      cvSaveImage("success-color.png",frame,0);
       // 2値化の映像を表示
       cvShowImage("binaryCapture",sourceBinaryImage);
+      cvSaveImage("success-mono.png",sourceBinaryImage,0);
 
 
       ckey = cvWaitKey(10);

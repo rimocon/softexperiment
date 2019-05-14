@@ -63,6 +63,7 @@ int main(int argc, char **argv)
 
    cvNamedWindow("Image", CV_WINDOW_AUTOSIZE);
    cvShowImage("Image", img);
+   cvSaveImage("image.png",img,0);
    cvWaitKey(0);
 
    cvDestroyWindow("Image");
