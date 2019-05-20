@@ -1,16 +1,19 @@
 #include <stdio.h>
 #include <SDL2/SDL.h> // SDLを用いるために必要なヘッダファイルをインクルード
+#include <SDL2/SDL2_gfxPrimitives.h>
 #include <SDL2/SDL_ttf.h> // TrueTypeフォントを表示するために必要なヘッダファイルをインクルード
 // メイン関数
 int main(int argc, char* argv[])
 {
 	int i;
+	int Circx = 300;
+	int Circy = 240;
 	char buf[32];
 	SDL_Window* window; // ウィンドウデータを格納する構造体
 	SDL_Renderer* renderer; // レンダリングコンテキスト（描画設定）を格納する構造体
-	Uint32 window_id, window_sub_id; // ウィンドウID
-	SDL_Surface* strings; // サーフェイス（メインメモリ上の描画データ）を格納する構造体
-	SDL_Texture* texture; // テクスチャ（VRAM上の描画データ）を格納する構造体
+	Uint32 window_id; // ウィンドウID
+	SDL_Surface* strings,*surface; // サーフェイス（メインメモリ上の描画データ）を格納する構造体
+	SDL_Texture* texture,*texture2; // テクスチャ（VRAM上の描画データ）を格納する構造体
 	TTF_Font* font; // TrueTypeフォントデータを格納する構造体
 	SDL_Color white = {0xFF, 0xFF, 0xFF, 0xFF};	// フォントの色を指定するための構造体（白色）
 	SDL_Color black = {0x00, 0x00, 0x00, 0x00}; //フォントの色を指定するための構造体(黒色)
@@ -30,25 +33,25 @@ int main(int argc, char* argv[])
 		printf("failed to initialize videomode.\n");
 		exit(-1);
 	}
-	SDL_Window* window_sub = SDL_CreateWindow("Sub Window",SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,600,480,0);
 
 	window_id = SDL_GetWindowID(window); // ウィンドウIDを取得
-	window_sub_id = SDL_GetWindowID(window_sub); // ウィンドウIDを取得
-	printf("Main Window ID=%d, Sub Window ID=%d\n", window_id, window_sub_id);
+	printf("Main Window ID=%d\n", window_id);
 
 	// レンダリングコンテキスト（RC）作成
 	renderer = SDL_CreateRenderer(window, -1, 0);
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 	SDL_RenderClear(renderer);
-	SDL_RenderPresent(renderer);
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-	TTF_Init(); // TrueTypeフォントを用いるための初期化
-	font = TTF_OpenFont("./fonts-japanese-gothic.ttf", 12); // fonts-japanese-gothicフォントを12ポイントで使用（読み込み）
-	// 文字列描画（表示）のための設定
-	SDL_Rect src_rect = {0, 0, 100, 30}; // コピー元文字列の領域（x, y, w, h）（strings->wとstrings->hにはそれぞれ文字列の横幅と高さが格納される）
-	SDL_Rect dst_rect = {0, 0, 100, 30}; // 文字列のコピー先の座標と領域（x, y, w, h）
-	// RCテクスチャ作成
 
+	rectangleColor(renderer,400,380, 500, 480, 0xffff00ff);
+	SDL_RenderPresent(renderer);
+	TTF_Init(); // TrueTypeフォントを用いるための初期化
+	font = TTF_OpenFont("./fonts-japanese-gothic.ttf", 24); // fonts-japanese-gothicフォントを12ポイントで使用（読み込み）
+	// 文字列描画（表示）のための設定
+	SDL_Rect src_rect = {0, 0, 200, 60}; // コピー元文字列の領域（x, y, w, h）（strings->wとstrings->hにはそれぞれ文字列の横幅と高さが格納される）
+	SDL_Rect dst_rect = {0, 0, 200, 60}; // 文字列のコピー先の座標と領域（x, y, w, h）
+	SDL_Rect src_rect2 = {250, 120, 100, 30}; // コピー元文字列の領域（x, y, w, h）（strings->wとstrings->hにはそれぞれ文字列の横幅と高さが格納される）
+	SDL_Rect dst_rect2 = {250, 120, 100, 30}; // 文字列のコピー先の座標と領域（x, y, w, h）
+	// RCテクスチャ作成
 	// イベント処理（無限ループ内でイベントを取得し，対応する処理を行う）
 	while(1){
 		// イベントを取得したなら
@@ -59,11 +62,7 @@ int main(int argc, char* argv[])
 				case SDL_MOUSEMOTION: // マウスが移動した時
 					sprintf(position,"x=%d y=%d",event.motion.x,event.motion.y);
 
-					strings = TTF_RenderUTF8_Blended(font,(const char*)position,white); // 描画文字の作成と格納（白色のfonts-japanese-gothicフォントで，文字列をサーフェイスに描画＝データとして格納）
-					texture = SDL_CreateTextureFromSurface(renderer, strings); // サーフェイス（文字列の描画データが格納されている）からRCのテクスチャを生成（サーフェイスからテクスチャへ変換）
-
-					SDL_RenderCopy(renderer, texture, &src_rect, &dst_rect); // テクスチャをRCにコピー（設定のサイズで）
-
+					strings = TTF_RenderUTF8_Blended(font,(const char*)position,black); // 描画文字の作成と格納（白色のfonts-japanese-gothicフォントで，文字列をサーフェイスに描画＝データとして格納）
 					SDL_RenderPresent(renderer); //レンダラーを表示
 					printf("Mouse moved by %d,%d to (%d,%d)\n", event.motion.xrel, event.motion.yrel, event.motion.x, event.motion.y); // マウスの座標を表示
 					break;
@@ -72,6 +71,10 @@ int main(int argc, char* argv[])
 					// マウスのボタンごとに処理
 					switch(event.button.button){
 						case SDL_BUTTON_LEFT:
+
+							Circx = event.motion.x;
+							Circy = event.motion.y;
+
 							printf("Left button pressed\n");
 							break;
 						case SDL_BUTTON_MIDDLE:
@@ -98,22 +101,31 @@ int main(int argc, char* argv[])
 							break;
 					}
 					break;
-					// SDLの利用を終了する時（イベントキューにSDL_QUITイベントが追加された時）
-				case SDL_QUIT:
+			case SDL_QUIT:
 					TTF_CloseFont(font); // 使用したフォントを閉じる
 					TTF_Quit();	// TTFライブラリの使用を終了
 					SDL_FreeSurface(strings); // サーフェイスの解放
 					SDL_DestroyTexture(texture); // テクスチャの解放
 					SDL_DestroyRenderer(renderer);
 					SDL_DestroyWindow(window);
-					SDL_DestroyWindow(window_sub);
 					SDL_Quit();
 					exit(0);
 					break;
 			}
-			/*// マウスポインタの位置に点を描画
-			  SDL_RenderDrawPoint(renderer, event.motion.x, event.motion.y);
-			 */
+			SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
+			SDL_RenderClear(renderer);
+
+			rectangleColor(renderer,400,380, 500, 480, 0xffff00ff);
+			filledCircleColor(renderer,Circx,Circy, 10, 0xffff00ff);
+			if(400 < Circx < 480 && 380 < Circy <480 ){
+			surface = TTF_RenderUTF8_Blended(font,"Good Job!",black); // 描画文字の作成と格納（白色のfonts-japanese-gothicフォントで，文字列をサーフェイスに描画＝データとして格納）
+			texture2 = SDL_CreateTextureFromSurface(renderer, surface); // サーフェイス（文字列の描画データが格納されている）からRCのテクスチャを生成（サーフェイスからテクスチャへ変換）
+			SDL_RenderCopy(renderer, texture2, &src_rect2, &dst_rect2); // テクスチャをRCにコピー（設定のサイズで)
+		}
+			// マウスポインタの位置に点を描画
+			SDL_RenderDrawPoint(renderer, event.motion.x, event.motion.y);
+			texture = SDL_CreateTextureFromSurface(renderer, strings); // サーフェイス（文字列の描画データが格納されている）からRCのテクスチャを生成（サーフェイスからテクスチャへ変換）
+			SDL_RenderCopy(renderer, texture, &src_rect, &dst_rect); // テクスチャをRCにコピー（設定のサイズで）
 			SDL_RenderPresent(renderer);
 		}
 	}

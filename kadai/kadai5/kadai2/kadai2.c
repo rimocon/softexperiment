@@ -45,8 +45,8 @@ int main( int argc,char *argv[]);
 	SDL_Rect src_rect2 = {0,0,image2->w,image2->h}
 	//コピー先画像のサイズ設定
 	SDL_Rect dst_rect1 = {20,20,100,50};
-	SDL_Rect dst_rect2 = {20,20,100,50};
-	SDL_Rect dst_rect3 = {20,20,100,50};
+	SDL_Rect dst_rect2 = {170,20,100,50};
+	SDL_Rect dst_rect3 = {320,20,100,50};
 	//テクスチャをレンダラーにコピー
 	SDL_RenderCopy(renderer,texture1,&src_rect1,&dst_rect1);
 	SDL_RenderCopy(renderer,texture2,&src_rect2,&dst_rect2);
@@ -55,6 +55,15 @@ int main( int argc,char *argv[]);
 	//好きな画像の読み込み
 
 	SDL_Surface *picture = IMG_Load("like.png");
+	SDL_Texture *likepicture =SDL_CreateTextureFromSurface(renderer,picture);
+	SDL_Rect src_like ={0,0,picture->w,picture->h};
+	SDL_Rect dst_like = {10,100,300,250};
+
+	rectangle Color(20,20,120,70,0xff000000); //赤色で囲う
+
+
+
+
 
 
 
