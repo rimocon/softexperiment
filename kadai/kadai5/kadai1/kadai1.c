@@ -13,6 +13,7 @@ int main(int argc, char* argv[])
 	SDL_Texture* texture; // テクスチャ（VRAM上の描画データ）を格納する構造体
 	TTF_Font* font; // TrueTypeフォントデータを格納する構造体
 	SDL_Color white = {0xFF, 0xFF, 0xFF, 0xFF};	// フォントの色を指定するための構造体（白色）
+	SDL_Color black = {0x00, 0x00, 0x00, 0x00}; //フォントの色を指定するための構造体(黒色)
 
 
 	SDL_Event event; // SDLによるイベントを検知するための構造体
@@ -37,31 +38,33 @@ int main(int argc, char* argv[])
 
 	// レンダリングコンテキスト（RC）作成
 	renderer = SDL_CreateRenderer(window, -1, 0);
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 	SDL_RenderClear(renderer);
 	SDL_RenderPresent(renderer);
 	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 	TTF_Init(); // TrueTypeフォントを用いるための初期化
 	font = TTF_OpenFont("./fonts-japanese-gothic.ttf", 12); // fonts-japanese-gothicフォントを12ポイントで使用（読み込み）
+	// 文字列描画（表示）のための設定
+	SDL_Rect src_rect = {0, 0, 100, 30}; // コピー元文字列の領域（x, y, w, h）（strings->wとstrings->hにはそれぞれ文字列の横幅と高さが格納される）
+	SDL_Rect dst_rect = {0, 0, 100, 30}; // 文字列のコピー先の座標と領域（x, y, w, h）
 	// RCテクスチャ作成
 
 	// イベント処理（無限ループ内でイベントを取得し，対応する処理を行う）
 	while(1){
 		// イベントを取得したなら
+		char position[32];
 		if(SDL_PollEvent(&event)){
 			// イベントの種類ごとに処理
 			switch (event.type) {
 				case SDL_MOUSEMOTION: // マウスが移動した時
-					strings = TTF_RenderUTF8_Blended(font,"test" ,white); // 描画文字の作成と格納（白色のfonts-japanese-gothicフォントで，文字列をサーフェイスに描画＝データとして格納）
+					sprintf(position,"x=%d y=%d",event.motion.x,event.motion.y);
 
-					// RCテクスチャ作成
+					strings = TTF_RenderUTF8_Blended(font,(const char*)position,white); // 描画文字の作成と格納（白色のfonts-japanese-gothicフォントで，文字列をサーフェイスに描画＝データとして格納）
 					texture = SDL_CreateTextureFromSurface(renderer, strings); // サーフェイス（文字列の描画データが格納されている）からRCのテクスチャを生成（サーフェイスからテクスチャへ変換）
 
-					// 文字列描画（表示）のための設定
-					SDL_Rect src_rect = {0, 0, strings->w, strings->h}; // コピー元文字列の領域（x, y, w, h）（strings->wとstrings->hにはそれぞれ文字列の横幅と高さが格納される）
-					SDL_Rect dst_rect = {0, 0, strings->w, strings->h}; // 文字列のコピー先の座標と領域（x, y, w, h）
 					SDL_RenderCopy(renderer, texture, &src_rect, &dst_rect); // テクスチャをRCにコピー（設定のサイズで）
-					//   
+
+					SDL_RenderPresent(renderer); //レンダラーを表示
 					printf("Mouse moved by %d,%d to (%d,%d)\n", event.motion.xrel, event.motion.yrel, event.motion.x, event.motion.y); // マウスの座標を表示
 					break;
 				case SDL_MOUSEBUTTONDOWN: // マウスのボタンが押された時
