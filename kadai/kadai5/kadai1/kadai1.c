@@ -82,7 +82,7 @@ int main(int argc, char* argv[])
 								surface = TTF_RenderUTF8_Blended(font,"Good Job!",black); // 描画文字の作成と格納（白色のfonts-japanese-gothicフォントで，文字列をサーフェイスに描画＝データとして格納）
 							}
 							else{
-								surface =TTF_RenderUTF8_Blended(font,"Good Job!",white);
+								surface =TTF_RenderUTF8_Blended(font," ",white);
 							}
 							printf("Left button pressed\n");
 							break;
