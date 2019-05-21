@@ -1,0 +1,147 @@
+\documentclass{jarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{here}
+\usepackage{listings,jlisting} %日本語のコメントアウトをする場合jlistingが必要
+%ここからソースコードの表示に関する設定
+\lstset{
+	basicstyle={\ttfamily},
+		identifierstyle={\small},
+		commentstyle={\smallitshape},
+		keywordstyle={\small\bfseries},
+		ndkeywordstyle={\small},
+		stringstyle={\small\ttfamily},
+		frame={tb},
+		breaklines=true,
+		columns=[l]{fullflexible},
+		numbers=left,
+		xrightmargin=0zw,
+		xleftmargin=3zw,
+		numberstyle={\scriptsize},
+		stepnumber=1,
+		numbersep=1zw,
+		lineskip=-0.5ex
+}
+\title{ソフトウェア設計及び実験\\
+	第5回レポート}
+	\author{6119019056 山口力也}
+	\date{2019/05/21日提出}
+
+
+	\begin{document}
+	\maketitle
+	\section{原理}
+	\subsection{SDL}
+	SDLとは(Simple DirectMedia Layer)の略であり,マルチメディアを簡単かつ直接に扱うためのライブラリである.特徴としては
+
+	\begin{itemize}
+
+	\item グラフィックス,サウンド,ジョイスティック,スレッド,タイマなどの機能を扱うことができ,ゲーム開発に多く用いられる
+	\item LinuxやWindows,MacOSなど主要なOSで使用可能
+	\item C言語だけでなく,C++,Java,Perlといった多くのプログラミング言語にも対応している
+	\end{itemize}
+	などが挙げられる.
+	\subsection{レンダラー}
+	レンダラーとはレンタリングコンテキストのことであり,ウィンドウに1対1で対応づけられて生成される.ウィンドウに何かを描画する場合はレンダラーを生成することが不可欠である.
+	\subsection{テクスチャ}
+	ウィンドウ内に文字を描画する場合,画像を文字化してウィンドウ内に描画する.しかしレンダラーには画像を直接描画することはできない.そのためテクスチャを生成し,テクスチャに対して画像を描画する必要がある.
+	テクスチャは画像を描画する対象であり,VRAM上でGPUにより高速かつ柔軟な描画処理を行うことができる.また,1つのレンダラーに対して複数のテクスチャを生成することができる.
+
+	\subsection{サーフェイス}
+	サーフェイスは画像を描画する対象であり,サーフェイスの描画データはそのまま表示することができない.画像ファイルを読み込む場合はサーフェイスからテクスチャに描画データを転送し,テクスチャからレンダラーに描画データを転送することでウィンドウに画像を表示することができる.
+	\subsection{ソフトウェアにおけるCUIとGUI}
+
+	CUI(Character User Interface)とGUI(Graphical User Interface)は以下のような特徴がある.
+	\begin{itemize}
+	\item CUI
+		\begin{itemize}
+		\item 利点:複雑な処理をまとめて実行できる
+		\item 欠点:コマンドを覚える必要がある
+		\end{itemize}
+	\item GUI
+		\begin{itemize}
+		\item 利点:アイコンやボタンの採用により直感的で専門家でなくてもわかりやすい 
+		\item 欠点:特にない
+		\end{itemize}
+	\end{itemize}
+	認知工学に基づいたUI設計を行うことで"使ってみたい"と思わせることができる.そのためには分かりやすく,かつ利便性の高いGUIなどが不可欠である.
+
+
+	\section{課題内容}
+	\subsection{ダイレクトマニピュレーション}
+	\label{subsec:kadai1}
+	ウィンドウの生成と表示,図形描画,マウス操作によるイベント駆動型プログラミング習得を目的として,次の要件を満たすプログラムを作成せよ.
+
+	\begin{itemize}
+
+	\item ウィンドウに円と四角を描画する
+	\item マウス(カーソル)の現在座標をウィンドウ上に表示する
+	\item 円をマウスでドラッグアンドドロップできる
+	\item 円を四角の中にドロップすると"Good job!"という文字列をウィンドウの中央付近に表示する
+	\item プログラム終了条件を入れるなど,自分なりのアレンジを加えても良い
+
+	\end{itemize}
+
+	ダイレクトマニピュレーションとは,Human Machine Interaction(HMI)をデザインとした設計スタイルのことであり,コンピューターのような仲介者を介さずに自発的にタスクを実行することを促進する行動を特徴とする.対話型システムのように操作が容易で誰にとってもわかりやすいシステムのことをいう.\cite{direct}
+	\subsection{アフォーダンスを考慮したGUI設計}
+	\label{subsec:kadai2}
+
+	画像描画,文字描画,キーボード操作によるイベント駆動型プログラミングなどの習得を目的として,次の要件を満たすプログラムを作成せよ.
+
+	\begin{itemize}
+
+	\item ウィンドウの上部にアフォーダンスに満ちたボタン3つを描画する.ボタンは図形描画または画像で作成すること.
+	\item 3つのボタンに文字を描画する.文字内容やフォントは各自で決める
+	\item キーボードの"$\leftarrow$","$\rightarrow$"キーを押すことで,3つのボタンから1つ選べるようにする.その際どのボタンが現在選択されているかわかるような視覚的効果を加えること.
+	\item "Enter/Return"キーを押すことで,選択中のボタンに対応して以下の処理を行う.
+
+	\begin{itemize}
+	\item ウィンドウ下部に画像を描画する.
+	\item 自分の好きな処理を行う.
+	\item プログラムを終了する.
+	\end{itemize}
+
+	\end{itemize}
+	アフォーダンスとは"環境や物は元から様々な使い方をアフォード（提供）しており,人や動物はその使い方をピックアップ（受取る）する"というものである.例えば、何も付いていない板だけのドアがあった場合,人はドアを開けることができれば中に入ることが可能だと知覚できるが,どのようにしてドアを開ければいいのかを瞬時に判断できない.
+しかし,ドアに平らな板が貼ってあれば押すことによって,ノブが付いていればノブを回して押すか引くかすることによって,ドアを開けることができると知覚しやすくなる.
+このように,ドアに分かりやすい特徴を持たせることによって.説明なしで誰でも使えるようになる.\cite{affordance}
+	\section{課題結果}
+	\subsection{ダイレクトマニピュレーション}
+	\ref{subsec:kadai1}節で与えられた課題の結果を以下図\ref{fig:kadai1}に示す.
+
+	\begin{figure}[H]
+	\begin{center}
+	\includegraphics[width=7.0cm]{images/kadai1.png}
+	\caption{課題1の結果}
+	\label{fig:kadai1}
+	\end{center}
+	\end{figure}
+	
+	x座標とy座標を表示し,円と四角を表示することはできた.また四角の中に円が入ると"Good Job!"と表示することもできたが,円をドラッグアンドドロップして移動する部分ができずに,クリックで移動する円になってしまい不完全な状態になった.
+
+	\subsection{アフォーダンスを考慮したGUI設計}
+	\ref{subsec:kadai2}節で与えられた課題の結果を以下図\ref{fig:kadai2}に示す.
+
+	\begin{figure}[H]
+	\begin{center}
+	\includegraphics[width=7.0cm]{images/kadai2.png}
+	\caption{課題2の結果}
+	\label{fig:kadai2}
+	\end{center}
+	\end{figure}
+
+	好きな処理はウィンドウの色を変える動作にした.
+
+	\section{考察}
+	\subsection{課題1について}
+	課題1についてはイベント処理の挙動をしっかりと知ることが大切だと思われる.私ははじめx座標とy座標の表示の部分でレンダラーに表示する部分の書き方を間違えて,何度もx座標とy座標の表示が何度も重なってしまい,左上の部分が真っ黒になっていた.また全体的に処理が早いためイベント駆動型プログラムの処理の順序や構造を理解し使えることが重要であると思われる.
+	\subsection{課題2について}
+	課題2については大規模なプログラムになるので変数名の定義などが重要だと思われる.SDLではSurfaceとTextureとRendererという順序をふむため,適当な変数を定義してしまうとどのTextureにどのSurfaceのデータを転送するかわからなくなってしまう.実際に自分もそうなったためあとから定義しなおし整理した.
+	\section{感想}
+	全体的に時間が少なく満足のいくプログラムを書くことができなかった.スライドや授業での解説は丁寧で分かりやすかったが,単純に覚える量が多すぎてキャパオーバーといった感じになってしまいかなり混乱した.私は編入生でシステム実験もあるためなかなか時間が取れなかったのも原因だと思う.
+	次回からはある程度予習などもしていきたいと思う.
+	\begin{thebibliography}{99}
+	\bibitem{direct} B.Shneiderman(1992),"Designing the User Interface: Strategies for Effective Human-Computer Interaction -- 2nd Edition",1992
+	\bibitem{affordance} アフォーダンスとは,https://boxil.jp/mag/a3059/
+	\end{thebibliography}
+
+\end{document}
