@@ -25,6 +25,7 @@ int main(int argc, char* argv[]) {
 	bool flag_jump = false; //ジャンプ検知用
 	bool flag_blue = false; //青丸当たり判定検知用
 	bool flag_red = false; //赤丸当たり判定検知用
+	bool flag_spin = false; //スピンジャンプ判定用
 	SDL_Window* window; // ウィンドウデータを格納する構造体
 	SDL_Renderer* renderer; // 2Dレンダリングコンテキスト(描画設定)を格納する構造体
 
@@ -235,13 +236,41 @@ int main(int argc, char* argv[]) {
 			flag_red = false;
 			flag_blue = true;
 		}
+		if ( abs(126 - wiimote.axis.x) > 10 && abs(130 - wiimote.axis.y) > 10 && abs(153 - wiimote.axis.z) > 50 && flag_spin == false ){ //事前にprintfした値との差の二乗平均があるしきい値を超えたら
+			printf("SPIN JUMP\n");
+			flag_spin = true;
+			chara_prev.y = chara.y;
+			chara.y -=20;
+		}
+		if ( flag_spin == true ){
+			chara_temp.y = chara.y;
+			chara.y += (chara.y - chara_prev.y)+1;
+			chara_prev.y = chara_temp.y;
+			printf("chara-prev = %d\n",chara.y-chara_prev.y);
+			printf("chara.y= %d\n",chara.y);
+			if(chara.y == 351){
+				flag_spin = false;
+			}
+		}
 		//デバッグ用
 		/*
-		printf("flag_blue = %d\n",flag_blue);
-		printf("flag_red= %d\n",flag_red);
-		*/
-		printf("charax = %d\n",chara.x);
-		printf("charay = %d\n",chara.y);
+			printf("flag_blue = %d\n",flag_blue);
+			printf("flag_red= %d\n",flag_red);
+		 */
+		// 加速度の状態
+		printf("AXIS x=%03d [%03d] y=%03d [%03d] z=%03d [%03d]\n", 
+				wiimote.axis.x,
+				wiimote.axis.x - 127,
+				wiimote.axis.y,
+				wiimote.axis.y - 127,
+				wiimote.axis.z,
+				wiimote.axis.z - 127);	// 分かりやすくするために-127をして±の値で表示
+
+
+		/*
+			printf("charax = %d\n",chara.x);
+			printf("charay = %d\n",chara.y);
+		 */
 		/***********************************/
 		/* 処理の記述ここまで               */
 		/***********************************/
