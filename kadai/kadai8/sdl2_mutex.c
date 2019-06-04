@@ -85,7 +85,7 @@ int wii_func(void * args)
 	///////////////////////////////////////
 
 	// ***** STEP_7_BEGIN *****
-	// SDL_mutex *mtx = (SDL_mutex *)args; // 引数型はmtxに変更
+	 SDL_mutex *mtx = (SDL_mutex *)args; // 引数型はmtxに変更
 	// ***** STEP_7_END *****
 
 	// Wiiリモコンがオープン（接続状態）であればループ
