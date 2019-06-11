@@ -175,7 +175,7 @@ SDL_Rect MeasureMask(SDL_Surface *s, SDL_Rect r)
        データはOpenCVの画素と同様に保存されている
        （デバイスプログラミング資料p.7参照）
        ただし1ピクセルは32bit */
-    Uint32 *p = (Uint32 *)(s->pixels) + s->w * r.y + r.x;
+    Uint32 *p = (Uint32 *)(s->pixels) + s->w * r.y + r.x; //
 
     /* (0,0)から走査して，最初に色のある点を(x,y)とする */
     for (ret.y = 0; ret.y < r.h; ret.y++, p += s->w) {
@@ -183,12 +183,12 @@ SDL_Rect MeasureMask(SDL_Surface *s, SDL_Rect r)
             if (p[ret.x] & s->format->Amask) {
                 /* (x,y)からx方向に走査して，色のなくなる点までをwとする */
                 for (ret.w = 0; ret.x + ret.w < r.w; ret.w++) {
-                    if (!(p[ret.x + ret.w] & s->format->Amask))
+                    if (!(p[ret.x + ret.w] & s->format->Amask)) //色がなくなったら
                         break;
                 }
                 /* (x,y)からy方向に走査して，色のなくなる点までをhとする */
                 for (ret.h = 0; ret.y + ret.h < r.h; ret.h++, p += s->w) {
-                    if (!(p[ret.x] & s->format->Amask))
+                    if (!(p[ret.x + ret.w] & s->format->Amask))
                         break;
                 }
                 if (ret2.w && ret2.h) {
@@ -441,8 +441,8 @@ void MoveChara(CharaInfo *ch)
     newpoint.x += ch->dir * ch->velocity.x * gGame.timeStep;
 
     /* y方向の移動(投げ上げ運動 v=v0-gt, y = v0t - 1/2 gt^2) */
-    newvely = ch->velocity.y - gGravity * gGame.timeStep;
-    newpoint.y += ch->velocity.y * gGame.timeStep - 1.0 / 2.0 * gGravity * gGame.timeStep * gGame.timeStep;
+    newvely = ch->velocity.y + gGravity * gGame.timeStep;
+    newpoint.y += ch->velocity.y * gGame.timeStep + 1.0 / 2.0 * gGravity * gGame.timeStep * gGame.timeStep;
 
     /* 床・壁との重なり調整 */
     SDL_Point adjusted = { 0 };
