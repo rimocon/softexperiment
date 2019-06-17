@@ -154,14 +154,16 @@ SDL_Rect MeasureMask(SDL_Surface *s, SDL_Rect r)
     SDL_Rect ret  = { 0 };
     SDL_Rect ret2 = { 0 };
     /* 検出範囲がマップの高さを超えるときは，
-       はみ出た範囲は調べない */
+		はみ出た範囲は調べない */
     if (r.y < 0) {
         r.h += r.y;
         r.y = 0;
+    } else if (r.y + r.h > MAP_Height * MAP_ChipSize) {
+        return ret;
     }
     /* 検出範囲がマップの幅を超えるときは，
-       超えた範囲を(0,y)から調査する
-       (マップ左右はつながっているので) */
+		超えた範囲を(0,y)から調査する
+		(マップ左右はつながっているので) */
     if (r.x + r.w > MAP_Width * MAP_ChipSize) {
         SDL_Rect r2 = r;
         r2.x        = 0;
@@ -172,9 +174,9 @@ SDL_Rect MeasureMask(SDL_Surface *s, SDL_Rect r)
     }
 
     /* ピクセルデータの(r.x,r.y)の位置まで移動
-       データはOpenCVの画素と同様に保存されている
-       （デバイスプログラミング資料p.7参照）
-       ただし1ピクセルは32bit */
+		データはOpenCVの画素と同様に保存されている
+		（デバイスプログラミング資料p.7参照）
+		ただし1ピクセルは32bit */
     Uint32 *p = (Uint32 *)(s->pixels) + s->w * r.y + r.x; //
 
     /* (0,0)から走査して，最初に色のある点を(x,y)とする */
@@ -188,7 +190,7 @@ SDL_Rect MeasureMask(SDL_Surface *s, SDL_Rect r)
                 }
                 /* (x,y)からy方向に走査して，色のなくなる点までをhとする */
                 for (ret.h = 0; ret.y + ret.h < r.h; ret.h++, p += s->w) {
-                    if (!(p[ret.x + ret.w] & s->format->Amask))
+                    if (!(p[ret.x] & s->format->Amask))
                         break;
                 }
                 if (ret2.w && ret2.h) {
@@ -201,7 +203,6 @@ SDL_Rect MeasureMask(SDL_Surface *s, SDL_Rect r)
     if (ret2.w && ret2.h) {
         ret = ret2;
     }
-
     return ret;
 }
 
@@ -211,7 +212,11 @@ int AdjustXrange(int x)
     while (x < 0) {
         x += MAP_Width * MAP_ChipSize;
     }
-    return x % (MAP_Width * MAP_ChipSize);
+    while (x >= MAP_Width * MAP_ChipSize) {
+        x -= MAP_Width * MAP_ChipSize;
+    }
+    return x;
+    //return x % (MAP_Width * MAP_ChipSize);
 }
 
 /* x座標のマップ範囲への補正float版 */
@@ -300,7 +305,7 @@ SDL_bool IsOutsideWindowLR(CharaInfo *ch, FloatPoint *point, SDL_bool adjust)
     SDL_bool ret = SDL_FALSE;
     SDL_Rect r   = ch->img->mask;
     /* 補正しない時は画面から出た時に判断するので，
-       画像の幅も考慮する */
+		画像の幅も考慮する */
     int dw = adjust ? 0 : r.w;
     /* 画像端付近の調整 */
     r.x += point->x;
@@ -376,12 +381,13 @@ void UpdateCharaStatus(CharaInfo *ch)
             break;
         case CT_Ball:
             if (gGame.input.button1) {
-                ch->rect.x = gChara[gGame.player].rect.x;
-                ch->rect.y = gChara[gGame.player].rect.y;
-                ch->point  = gChara[gGame.player].point;
-                ch->dir    = gChara[gGame.player].dir;
-                ch->stts   = CS_Enable;
-                ch->hp     = 1;
+                ch->rect.x   = gChara[gGame.player].rect.x;
+                ch->rect.y   = gChara[gGame.player].rect.y;
+                ch->point    = gChara[gGame.player].point;
+                ch->dir      = gChara[gGame.player].dir;
+                ch->stts     = CS_Enable;
+                ch->hp       = 1;
+                ch->velocity = ch->basevel;
             }
             break;
         case CT_BossBall:
@@ -435,6 +441,10 @@ void MoveChara(CharaInfo *ch)
     if (ch->stts == CS_Disable) {
         return;
     }
+    /* 拠点は移動させない */
+    if (ch->type == CT_Station) {
+        return;
+    }
     FloatPoint newpoint = ch->point;
     float newvely       = ch->velocity.y;
     /* x方向の移動(等速運動 x=vt) */
@@ -483,7 +493,10 @@ void MoveChara(CharaInfo *ch)
         && IsOutsideWindowLR(ch, &newpoint, SDL_FALSE)) {
         ch->stts = CS_Disable;
     }
-
+    if (ch->type == CT_Ball) {
+        ch->velocity.x = ch->basevel.x;
+        ch->velocity.y = ch->basevel.y;
+    }
     ch->point      = newpoint;
     ch->velocity.y = newvely;
     ch->rect.x     = newpoint.x;
@@ -528,6 +541,10 @@ void Collision(CharaInfo *ci, CharaInfo *cj)
             if (cj->type == CT_Station) {
                 gGame.restStations--;
             }
+        }
+        if (gGame.restStations == 0) {
+            gGame.stts = GS_Warning;
+            gGame.msg  = MSG_Warning;
         }
     }
 }

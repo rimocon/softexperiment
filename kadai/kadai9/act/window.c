@@ -87,6 +87,10 @@ int InitWindow(void)
         }
         /* マスク算出 */
         gCharaImg[i].mask = MeasureMask(s, r);
+        if (i == CT_Boss || i == CT_BossBall) {
+            r.w *= 2;
+            r.h *= 2;
+        }
         /* サーフェイス解放(テクスチャに転送後はゲーム中に使わないので) */
         SDL_FreeSurface(s);
         if (gCharaImg[i].image == NULL) {
@@ -101,11 +105,14 @@ int InitWindow(void)
         gChara[i].point.x = gChara[i].point.y = 0.0;
         gChara[i].velocity.x = gChara[i].velocity.y = 0.0;
         gChara[i].rect.x = gChara[i].rect.y = 0;
-
-        gChara[i].rect.w = gCharaImg[gChara[i].type].w;
-        gChara[i].rect.h = gCharaImg[gChara[i].type].h;
-        gChara[i].src    = gChara[i].rect;
-        gChara[i].img    = &(gCharaImg[gChara[i].type]);
+        gChara[i].rect.w                    = gCharaImg[gChara[i].type].w;
+        gChara[i].rect.h                    = gCharaImg[gChara[i].type].h;
+        gChara[i].src                       = gChara[i].rect;
+        gChara[i].img                       = &(gCharaImg[gChara[i].type]);
+        if (gChara[i].type == CT_Boss || gChara[i].type == CT_BossBall) {
+            gChara[i].src.h = gChara[i].rect.h / 2;
+            gChara[i].src.w = gChara[i].rect.w / 2;
+        }
     }
 
     /* メッセージ作成 */
