@@ -109,7 +109,7 @@ int InitWindow(void)
         gChara[i].rect.h                    = gCharaImg[gChara[i].type].h;
         gChara[i].src                       = gChara[i].rect;
         gChara[i].img                       = &(gCharaImg[gChara[i].type]);
-        if (gChara[i].type == CT_Boss || gChara[i].type == CT_BossBall) {
+        if (gChara[i].type == CT_Boss || gChara[i].type == CT_BossBall) { //ボスのときは読み込む範囲を半分に
             gChara[i].src.h = gChara[i].rect.h / 2;
             gChara[i].src.w = gChara[i].rect.w / 2;
         }
