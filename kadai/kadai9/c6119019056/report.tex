@@ -1,0 +1,68 @@
+\documentclass{jarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{here}
+\usepackage{listings,jlisting} %日本語のコメントアウトをする場合jlistingが必要
+%ここからソースコードの表示に関する設定
+\lstset{
+	basicstyle={\ttfamily},
+		identifierstyle={\small},
+		commentstyle={\smallitshape},
+		keywordstyle={\small\bfseries},
+		ndkeywordstyle={\small},
+		stringstyle={\small\ttfamily},
+		frame={tb},
+		breaklines=true,
+		columns=[l]{fullflexible},
+		numbers=left,
+		xrightmargin=0zw,
+		xleftmargin=3zw,
+		numberstyle={\scriptsize},
+		stepnumber=1,
+		numbersep=1zw,
+		lineskip=-0.5ex
+}
+\title{ソフトウェア設計及び実験\\
+	第9回レポート}
+\author{6119019056 山口力也}
+\date{2019/06/18日提出}
+
+
+\begin{document}
+\maketitle
+\section{テストログ}
+以下表\ref{table:testlog}にテストログの表を示す.
+
+\begin{table}[H]
+  \centering
+  \caption{テストログ}
+  \begin{tabular}{|c|p{2cm}|p{2cm}|p{2cm}|p{2cm}|} \hline
+    No. & 手順 & 期待する結果 & 判定 & 不具合No. \\ \hline
+	 1 & マップ情報ファイルが存在しない状態でプログラムを起動する & エラーメッセ-ジを表示して終了する & $\circ$ & \\ \hline
+    2 & プレイヤー動作を確認 & キャラクターが正常に表示される & $\times$ &1 \\ \hline
+	 3 & プレイヤー動作を確認 & 穴に落ちるとGAMEOVERになる & $\times$ & 2 \\ \hline
+	 4 & ボール動作を確認 & スペースキーを押すと横方向にボールが飛ぶ & $\times$ & 3 \\ \hline
+	 5 & 敵の動作を確認 & 拠点が描画される & $\times$ & 4 \\ \hline
+	 6 & ボスの動作を確認 & 拠点を3つ倒すとボスが出現 & $\times$ & 5 \\ \hline 
+	 7 & 敵の動作を確認 & プレイヤーと敵が接触するとhpが減る & $\times$ & 6 \\ \hline
+  \end{tabular}
+  \label{table:testlog}
+\end{table}
+
+\section{不具合報告書}
+以下表\ref{table:huguai}に不具合報告書の表を示す.
+\begin{table}[H]
+  \centering
+  \caption{不具合報告書}
+  \begin{tabular}{|c|p{2cm}|p{2cm}|p{2cm}|p{2cm}|p{2cm}|} \hline
+    No. & タイトル & テストNo. & 再現率 & 原因 & 修正内容 \\ \hline
+	 1 & 起動時にキャラが上に飛んでいく & 1 & 毎回 & y方向の重力と速度の式が間違っていた& newvely.yとnewpoint.yの式を変更した  \\ \hline
+    2 & 穴に入るとプログラムが落ちる & 2 & 毎回 & 画面外(下方向)での処理が記述されていなかった &下方向の画面外にキャラが移動したときの処理を記述した   \\ \hline
+	 3 & ボールが横に飛ばない & 3 & 毎回 & ボールに横方向の速度が与えられていなかった & MoveChara関数のボールの処理に横方向の速度を記述 \\ \hline
+	 4 & 拠点が瞬間移動する & 4 & 毎回 & 拠点を固定する記述がない & MoveChara関数内で拠点の場合何もしない記述を追加した  \\ \hline
+	 5 &  拠点を3つ倒してもボスが出現しない & 5 & 毎回 & 拠点を何個倒したか保存できていない & 拠点を3つ倒した時にWarningがでる処理を記述 \\ \hline
+	 6 &画面左側から出現した敵に当たり判定がない & 6 & 毎回 & わからなかった &   \\ \hline 
+  \end{tabular}
+  \label{table:huguai}
+\end{table}
+
+\end{document}

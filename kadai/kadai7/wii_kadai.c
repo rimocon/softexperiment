@@ -208,20 +208,21 @@ int main(int argc, char* argv[]) {
 			chara.x -= 3; 
 		}
 
-		if(flag_jump == true){
-			chara_temp.y = chara.y;
-			chara.y += (chara.y - chara_prev.y)+1;
-			chara_prev.y = chara_temp.y;
+		if(flag_jump == true){ //flagがたっているなら
+			chara_temp.y = chara.y; //現在の値を一旦格納
+			chara.y += (chara.y - chara_prev.y)+1; //現在の値 - 過去の値 + 1(上昇中は負の値,下降中は正の値)
+			chara_prev.y = chara_temp.y; //格納していたyの値を前回の値として格納
+			//デバッグ用
 			printf("chara-prev = %d\n",chara.y-chara_prev.y);
 			printf("chara.y= %d\n",chara.y);
-			if(chara.y == 350){
-				flag_jump = false;
+			if(chara.y == 350){ //元の地面についたら
+				flag_jump = false; //終了.flag初期化
 			}
 		}
-		if(wiimote.keys.two != 0 && flag_jump == false){
-			flag_jump = true;
-			chara_prev.y = chara.y;
-			chara.y -=20;
+		if(wiimote.keys.two != 0 && flag_jump == false){ //2ボタンが押された時かつflagが立っていない時
+			flag_jump = true; //flagをたてる
+			chara_prev.y = chara.y; //現在のyの値を過去の値として格納
+			chara.y -=20; //最初に引く値
 		}
 		/**********************************************************************/
 		/*キャラ横幅20,赤丸の横幅5で赤丸のx座標が25なのでx座標は0<=x<=30で当たり判定*/
@@ -236,19 +237,21 @@ int main(int argc, char* argv[]) {
 			flag_red = false;
 			flag_blue = true;
 		}
-		if ( abs(126 - wiimote.axis.x) > 10 && abs(130 - wiimote.axis.y) > 10 && abs(153 - wiimote.axis.z) > 50 && flag_spin == false ){ //事前にprintfした値との差の二乗平均があるしきい値を超えたら
-			printf("SPIN JUMP\n");
-			flag_spin = true;
-			chara_prev.y = chara.y;
-			chara.y -=20;
+		if ( abs(126 - wiimote.axis.x) > 10 && abs(130 - wiimote.axis.y) > 10 && abs(153 - wiimote.axis.z) > 50 && flag_spin == false ){ //事前にprintfした値との差の絶対値があるしきい値を超えたら
+			printf("SPIN JUMP\n"); //デバッグ用
+			flag_spin = true; //フラグを立てる
+			chara_prev.y = chara.y; //現在のyの値を過去の値として格納
+			chara.y -=20; //最初に引く値
 		}
-		if ( flag_spin == true ){
-			chara_temp.y = chara.y;
-			chara.y += (chara.y - chara_prev.y)+1;
-			chara_prev.y = chara_temp.y;
+		if ( flag_spin == true ){ //flagが立っているなら
+			chara.w = 10; //キャラの横幅を半分に
+			chara_temp.y = chara.y; //現在の値を一旦格納
+			chara.y += (chara.y - chara_prev.y)+1; //現在の値 - 過去の値 + 1
+			chara_prev.y = chara_temp.y;  //格納していた現在の値を前回の値として格納
+			//デバッグ用
 			printf("chara-prev = %d\n",chara.y-chara_prev.y);
 			printf("chara.y= %d\n",chara.y);
-			if(chara.y == 351){
+			if(chara.y == 350){ //地面についたら
 				flag_spin = false;
 			}
 		}
@@ -256,18 +259,14 @@ int main(int argc, char* argv[]) {
 		/*
 			printf("flag_blue = %d\n",flag_blue);
 			printf("flag_red= %d\n",flag_red);
-		 */
 		// 加速度の状態
-		printf("AXIS x=%03d [%03d] y=%03d [%03d] z=%03d [%03d]\n", 
+			printf("AXIS x=%03d [%03d] y=%03d [%03d] z=%03d [%03d]\n", 
 				wiimote.axis.x,
 				wiimote.axis.x - 127,
 				wiimote.axis.y,
 				wiimote.axis.y - 127,
 				wiimote.axis.z,
 				wiimote.axis.z - 127);	// 分かりやすくするために-127をして±の値で表示
-
-
-		/*
 			printf("charax = %d\n",chara.x);
 			printf("charay = %d\n",chara.y);
 		 */

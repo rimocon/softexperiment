@@ -1,0 +1,165 @@
+\documentclass{jarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{here}
+\usepackage{listings,jlisting} %日本語のコメントアウトをする場合jlistingが必要
+%ここからソースコードの表示に関する設定
+\lstset{
+	basicstyle={\ttfamily},
+		identifierstyle={\small},
+		commentstyle={\smallitshape},
+		keywordstyle={\small\bfseries},
+		ndkeywordstyle={\small},
+		stringstyle={\small\ttfamily},
+		frame={tb},
+		breaklines=true,
+		columns=[l]{fullflexible},
+		numbers=left,
+		xrightmargin=0zw,
+		xleftmargin=3zw,
+		numberstyle={\scriptsize},
+		stepnumber=1,
+		numbersep=1zw,
+		lineskip=-0.5ex
+}
+\title{ソフトウェア設計及び実験\\
+	第7回レポート}
+\author{6119019056 山口力也}
+\date{2019/06/04日提出}
+
+
+\begin{document}
+\maketitle
+\section{プログラム概要}
+以下に作成したプログラムの流れを説明する.
+\subsection{走る動作}
+まず走る動作については以下のソースコード\ref{code:run}に示す.
+
+\begin{lstlisting}[caption = 走る動作,label=code:run]
+if(wiimote.keys.down){ //右ボタン
+chara.x += 2;
+}
+if(wiimote.keys.up){ //左ボタン
+chara.x -= 2;
+}
+\end{lstlisting}
+
+キャラの位置情報を更新して走る動作を実現している.
+\subsection{ダッシュ動作}
+次に,ダッシュ動作について以下ソースコード\ref{code:dash}に示す.
+\begin{lstlisting}[caption = ダッシュ動作,label=code:dash]
+if(wiimote.keys.one && wiimote.keys.down){ //1ボタン+右ボタン
+chara.x += 3;
+} 
+if(wiimote.keys.one && wiimote.keys.up){ //1ボタン+左ボタン
+chara.x -= 3; 
+}
+\end{lstlisting}
+ここではif文1ボタンと左右のボタンがどちらも押された時という条件を論理和で実現している.
+
+\subsection{しゃがみ動作}
+しゃがみ動作について以下ソースコード\ref{code:shagami}に示す.
+
+\begin{lstlisting}[caption = しゃがみ動作,label=code:shagami]
+if(wiimote.keys.left !=0 && flag_jump == false){ //下ボタン
+chara.y = 370;
+chara.h = 20; //しゃがむ
+}
+else if (wiimote.keys.left == 0 && flag_jump == false){
+chara.y = 350;
+chara.h = 40;
+}
+\end{lstlisting}
+
+後述するジャンプ動作中にしゃがみ動作が機能しないように論理和で条件付けを行っている.基本的には下ボタンが押されるとキャラの位置情報のyを変えることで実現している.ここで,SDLのウィンドウのy軸は上方向が0で,キャラの位置情報が左上端からはじまっているので,しゃがむ場合はキャラの位置情報の始点のyの値を増やす必要がある.
+
+\subsection{ジャンプ動作}
+ジャンプ動作について以下ソースコード\ref{code:jump}に示す.
+
+\begin{lstlisting}[caption = ジャンプ動作,label=code:jump]
+if(flag_jump == true){ //flagがたっているなら
+	chara_temp.y = chara.y; //現在の値を一旦格納
+	chara.y += (chara.y - chara_prev.y)+1; //現在の値 - 過去の値 + 1(上昇中は負の値,下降中は正の値)
+	chara_prev.y = chara_temp.y; //格納していたyの値を前回の値として格納
+	//デバッグ用
+	printf("chara-prev = %d\n",chara.y-chara_prev.y);
+	printf("chara.y= %d\n",chara.y);
+	if(chara.y == 350){ //元の地面についたら
+		flag_jump = false; //終了.flag初期化
+	}
+}
+if(wiimote.keys.two != 0 && flag_jump == false){ //2ボタンが押された時かつflagが立っていない時
+	flag_jump = true; //flagをたてる
+	chara_prev.y = chara.y; //現在のyの値を過去の値として格納
+	chara.y -=20; //最初に引く値
+}
+\end{lstlisting}
+
+ここで,flag\_jumpはbool型の大域変数で初期値はfalseで,chara\_prevとchara\_tempはchara構造体と全く同じ構造体である.flagがtrueになるとyの値に現在のyの値と前回のyの値の差に+1した値を足していく.この値は上昇中は負の値になり,下降中は正の値になる.これによりジャンプの頂点に近くなればなるほど値が0に近くなることで重力らしさを実現している.
+
+\subsection{スピンジャンプ}
+スピンジャンプについて以下ソースコード\ref{code:spin}に示す.
+\begin{lstlisting}[caption = スピンジャンプ,label=code:spin]
+if ( abs(126 - wiimote.axis.x) > 10 && abs(130 - wiimote.axis.y) > 10 && abs(153 - wiimote.axis.z) > 50 && flag_spin == false ){ //事前にprintfした値との差の絶対値があるしきい値を超えたら
+	printf("SPIN JUMP\n"); //デバッグ用
+	flag_spin = true; //フラグを立てる
+	chara_prev.y = chara.y; //現在のyの値を過去の値として格納
+	chara.y -=20; //最初に引く値
+}
+if ( flag_spin == true ){ //flagが立っているなら
+	chara.w = 10; //キャラの横幅を半分に
+	chara_temp.y = chara.y; //現在の値を一旦格納
+	chara.y += (chara.y - chara_prev.y)+1; //現在の値 - 過去の値 + 1
+	chara_prev.y = chara_temp.y;  //格納していた現在の値を前回の値として格納
+	//デバッグ用
+	printf("chara-prev = %d\n",chara.y-chara_prev.y);
+	printf("chara.y= %d\n",chara.y);
+	if(chara.y == 350){ //地面についたら
+		flag_spin = false;
+		chara.w = 20; //キャラの横幅を戻す
+	}
+}
+\end{lstlisting}
+
+基本的な動作はジャンプ動作と同じだが,異なる部分はその条件式である.事前にprintfしておいた値からある程度の予想をつけて論理和で振る動作をしたときの加速度センサの値を見て,振っているかそうでないか判断した.
+
+\subsection{フラワー}
+フラワーについて以下ソースコード\ref{code:flower}に示す.
+
+\begin{lstlisting}[caption = フラワー,label=code:flower]
+if(0 <= chara.x  && chara.x <= 30 && 325 <= chara.y && chara.y <= 430 ){
+	flag_red = true;
+	flag_blue = false;
+}
+/*キャラ横幅20,青丸の横幅5で青丸のx座標が485なのでx座標は460<=x<=510で当たり判定*/
+/*キャラの縦幅50,青丸の縦幅5で青丸のy座標が380なのでy座標は325<=y<=430で当たり判定*/
+if(460 <= chara.x  && chara.x <= 510 && 325 <= chara.y && chara.y <= 430 ){
+	flag_red = false;
+	flag_blue = true;
+}
+/**************中略****************/
+/************描画部分**************/
+filledCircleColor(renderer, 25, 380, 5, 0xff0000ff); // 左に赤丸アイテム
+filledCircleColor(renderer, 485, 380, 5, 0xffff0000); // 右に青丸アイテム
+if(flag_blue == true){ //青丸に触れた時
+	SDL_SetRenderDrawColor(renderer, 0, 0, 255, 0);
+	SDL_RenderFillRect(renderer, &chara);              // キャラの描画
+}
+else if(flag_red == true){ //赤丸に触れた時
+	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 0);
+	SDL_RenderFillRect(renderer, &chara);              // キャラの描画
+}
+else if(flag_blue == false && flag_red == false){
+	SDL_SetRenderDrawColor(renderer, 255, 150, 150, 0);
+	SDL_RenderFillRect(renderer, &chara);              // キャラの描画
+}
+SDL_RenderPresent(renderer);	// 描画データを表示
+\end{lstlisting}
+
+処理の部分で,当たり判定を行う.flag\_redとflag\_blueはbool型の大域変数で初期値はfalseである.描画部分では,キャラの色を変えるかどうかを処理部分のflagを見て決めている.
+
+\subsection{ショット動作}
+次のショット動作については時間が足りずに完成しなかった.
+\section{自由課題}
+自由課題としてはジャンプ動作の部分で重力を実装したことと,動作には関係ないが,BGMを入れて見たことである.
+
+\end{document}
