@@ -61,8 +61,51 @@
 	\end{center}
 \label{table:inputdevice} 
 \end{table}
- 
-\subsection{世界観の設定}
+
+\section{実装方法}
+\subsection{データの構造}
+以下表\ref{table:data}に主なデータの構造を示す.
+
+\begin{table}[H]
+\caption{共通の構造}
+	\begin{center}
+		\begin{tabular}{|c|c|c|}\hline 
+		データ型& 変数名 & 内容 \\ \hline
+		int & type &オブジェクトの型(プレイヤー,敵,弾,etc) \\ 
+		Point &pos & オブジェクトの座標 \\
+		unsigned short & id & オブジェクトの番号 \\ 
+		\hline
+		\end{tabular}
+	\end{center}
+\label{table:data} 
+\end{table}
+
+以下表\ref{table:player}にプレイヤー固有の構造体を示す.
+\begin{table}[H]
+\caption{キャラ固有の構造}
+	\begin{center}
+		\begin{tabular}{|c|c|c|}\hline 
+		データ型& 変数名 & 内容 \\ \hline
+		unsigned short & hp & キャラのhp \\ 
+		int &status &キャラの状態  \\
+		\hline
+		\end{tabular}
+	\end{center}
+\label{table:player} 
+\end{table}
+
+クイズの構造はまだ考えれていないので,まずはシューティングゲームの基本的な枠組みができた後,クイズの方を作成していきたいと思う.
+
+\section{ガントチャート}
+以下図\ref{fig:gantt}にガントチャートの図を示す.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=7.0cm]{chart.png}
+\caption{ガントチャート図}
+\label{fig:gantt}
+\end{center}
+\end{figure}
 
 
 \end{document}
