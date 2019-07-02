@@ -5,8 +5,11 @@ int main (int argc, char *argv[]) {
 	startup();
 
 	while ((quits()) != 0) {
+		background();
 		switch(games) {
 			case 0: //タイトル画面
+				drawtitle(0,0); //タイトルを描画
+				//printf("0\n");
 				break;
 			case 1: //ゲーム画面
 				break; 
