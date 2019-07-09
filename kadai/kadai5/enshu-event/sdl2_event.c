@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 
     SDL_Event event; // SDLによるイベントを検知するための構造体
     SDL_Event quit_event = {SDL_QUIT}; // 特定のイベント名を格納
-//    SDL_Joystick *joystick; // ジョイスティックを特定・利用するための構造体
+    SDL_Joystick *joystick; // ジョイスティックを特定・利用するための構造体
 
     // SDL初期化（ビデオとジョイスティック）
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {
@@ -50,7 +50,6 @@ int main(int argc, char* argv[])
     SDL_RenderPresent(renderer);
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
 
-/*
     // 接続されているジョイスティックの名前を表示
     for(i=0; i<SDL_NumJoysticks(); i++){ // 接続されているジョイスティックの数だけ繰り返す
         joystick = SDL_JoystickOpen(i); // ジョイスティックを開く
@@ -68,7 +67,6 @@ int main(int argc, char* argv[])
         printf("The joystick has %d Hat keys.\n",SDL_JoystickNumHats(joystick)); // Hatキー数を取得
         printf("The joystick has %d balls.\n",SDL_JoystickNumBalls(joystick)); // ボール数を取得
     }
-*/
 
     // イベント処理（無限ループ内でイベントを取得し，対応する処理を行う）
     while(1){
@@ -125,7 +123,6 @@ int main(int argc, char* argv[])
                     }
                 }
                 break;
-/*
             // ジョイスティックの方向キーまたはアナログキー（スティック)が押された時
             case SDL_JOYAXISMOTION:
                 printf("The axis ID of the operated key is %d.\n",event.jaxis.axis); // 操作された方向キーの方向軸を表示（0：アナログキー，1：アナログキー，2：方向キー左右方向，3：方向キー上下方向）
@@ -159,7 +156,6 @@ int main(int argc, char* argv[])
                     printf("--- You released a button on the joystick.\n");
                 }
                 break;
-*/
             // ウィンドウイベントが発生した時
             case SDL_WINDOWEVENT:
                 printf("Generated window's ID=%d, Event-catched window's ID=%d\n", window_id, event.window.windowID);

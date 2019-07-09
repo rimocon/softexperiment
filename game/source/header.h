@@ -34,11 +34,12 @@ typedef struct { //フレームレート用の構造体
 }timers;
 
 typedef struct { //キー入力用の構造体
-	uint32 left, //左矢印
-			 right, //右矢印
-			 up, //上矢印
-			 down. //下矢印
-			 time; //発射キーの押された時間
+	Uint32	left, //左矢印
+	 			right, //右矢印
+				up, //上矢印
+				down, //下矢印
+				z, //発射キー(ジョイパッドの6番)
+				time; //発射キーの押された時間
 }inputkeys;
 
 
@@ -50,4 +51,6 @@ void background(); //背景描画用
 void imageload(); //画像読み込み用
 void drawtitle(Sint16 posX, Sint16 posY); //タイトル描画関数
 void input(); //入力用関数
+void startGame(); //タイトル画面->ゲーム画面用関数
+void drawgame(); //ゲーム画面の背景描画用
 #endif
