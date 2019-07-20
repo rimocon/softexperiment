@@ -312,7 +312,6 @@ int main(int argc, char* argv[]) {
 	return 0;
 }
 
-int null_thread(void *atm){
 
 	SDL_Event event;
 
