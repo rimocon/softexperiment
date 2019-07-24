@@ -22,6 +22,7 @@
 
 /*********グローバル変数***********/
 int games; //ゲームの現在の状態を取得するために使う
+int score; //得点
 bool titledraw; //一回だけ描画する用
 bool gamedraw; //一回だけ描画する用
 bool run; //終了するかどうか

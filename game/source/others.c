@@ -1,6 +1,7 @@
 #include"header.h"
 /********ヘッダファイルからの読み込み******/
 extern int games; //ゲーム状態
+extern int score; //得点
 extern bool titledraw; //一回だけ描画するよう
 extern bool gamedraw; //一回だけ描画するよう
 extern bool run; //一回だけ描画するよう
@@ -8,6 +9,7 @@ extern bool enemylive; //敵が生きてるかどうか
 extern bool test_enemylive[enemynumber];
 extern bool up;
 extern bool down;
+
 
 extern SDL_Window *mainwindow; //メイン画面用ウィンドウ
 extern SDL_Surface *mainsurface; //メイン画面用サーフェイス
@@ -70,6 +72,9 @@ void startup() {
 	SDL_RenderPresent(mainrenderer); //描画データを表示
 	//ゲームの状態を判別する変数(とりあえず0)
 	games = 0;
+	//得点を初期化
+	score = 0;
+
 	SDL_Init(SDL_INIT_JOYSTICK); //SDL初期化
 	// 接続されているジョイスティックの名前を表示
 	if(SDL_NumJoysticks() > 0) {
@@ -217,14 +222,14 @@ void drawtitle(Sint16 posX,Sint16 posY) {
 		down = true;
 	}
 	if(up) {
-		rectangleColor(mainrenderer, 450, 300, 750, 500, 0xffff0000);
+		rectangleColor(mainrenderer, 450, 300, 750, 500, 0xffffffff);
 		if(keys.start == 1) {
 			reset();
 			games = 1;
 		}
 	}
 	if(down) {
-		rectangleColor(mainrenderer, 450, 550, 750, 750, 0xffff0000);
+		rectangleColor(mainrenderer, 450, 550, 750, 750, 0xffffffff);
 		if(keys.start == 1) {
 			run = false;
 		}
@@ -392,6 +397,7 @@ void drawgame(Sint16 posX,Sint16 posY) {
 	SDL_RenderCopy(mainrenderer,gametexture, &backimg2_src, &backimg2_dst); //テクスチャをレンダラーにコピー
 	SDL_RenderCopy(mainrenderer,metexture, &meimg_src, &meimg_dst); //テクスチャをレンダラーにコピー
 	SDL_RenderPresent(mainrenderer); //描画データを表示
+
 	gamedraw = false; //一回だけ表示したいのでfalseに
 }
 
@@ -407,6 +413,7 @@ void reset() {
 	}
 	me.bulletX[0] = 0;
 	me.bulletY[0] = windowheight;
+	score = 0;
 }
 
 //自キャラ座標計算用
@@ -421,8 +428,8 @@ void me_move() {
 
 	if(keys.left == 1) me.posX --; //左キーが押されたら左に移動
 	if(keys.right == 1) me.posX ++; //右キーが押されたら右に移動
-	if(keys.up == 1) me.posY --; //上キーが押されたら上に移動
-	if(keys.down == 1) me.posY ++; //下キーがおされたら下に移動
+	//if(keys.up == 1) me.posY --; //上キーが押されたら上に移動
+	//if(keys.down == 1) me.posY ++; //下キーがおされたら下に移動
 	
 	/*********画面外にでないようにする処理****************/
 	if(me.posX > windowwidth - 64) me.posX = windowwidth - 64; 
@@ -531,12 +538,17 @@ void enemy_move() {
 
 void judge() {
 	if( abs(me.bulletX[0] - enemy.posX) < 128 && abs(me.bulletY[0] - enemy.posY) < 128 ) {
-		enemylive = false;
-		games = 2;
+		//enemylive = false;
+		//games = 2;
+		score++;
+		me.bulletX[0] = windowwidth;
+		me.bulletY[0] = 0;
+		keys.z = 0;
 	}
 }
 
 void drawclear() {
+	printf("スコア: %d\n",score);
 	SDL_RenderCopy(mainrenderer,cleartexture, &clearimg_src, &clearimg_dst); //テクスチャをレンダラーにコピー
 	SDL_RenderPresent(mainrenderer); //描画データを表示
 	SDL_Delay(2000);

@@ -1,4 +1,5 @@
 #include "header.h"
+timers timer;
 int main (int argc, char *argv[]) {
 	//メインウィンドウを作成
 	startup();
@@ -16,6 +17,7 @@ int main (int argc, char *argv[]) {
 			case 1: //ゲーム画面
 				if(gamedraw) {
 					drawgame(0,0); //ゲーム画面描画
+					timer.leave = SDL_GetTicks(); //現在の時間を代入
 				}
 				else {
 					SDL_RenderClear(mainrenderer); //レンダラーをクリア
@@ -25,6 +27,10 @@ int main (int argc, char *argv[]) {
 					judge(); //当たり判定
 					me_draw(); //自キャラを描画
 				//	enemy_draw(); //敵キャラを描画
+					timer.now = SDL_GetTicks();
+					if(timer.now - timer.leave > 10000) {
+						games = 2;
+					}
 				}
 				break; 
 			case 2: //ゲームクリア画面
