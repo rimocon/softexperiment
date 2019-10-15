@@ -1,0 +1,49 @@
+\documentclass{jarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{here}
+\usepackage{listings,jlisting}
+\usepackage{amsmath}
+
+\lstset{
+  basicstyle={\ttfamily},
+  identifierstyle={\small},
+  commentstyle={\smallitshape},
+  keywordstyle={\small\bfseries},
+  ndkeywordstyle={\small},
+  stringstyle={\small\ttfamily},
+  frame={tb},
+  breaklines=true,
+  columns=[l]{fullflexible},
+  numbers=left,
+  xrightmargin=0zw,
+  xleftmargin=3zw,
+  numberstyle={\scriptsize},
+  stepnumber=1,
+  numbersep=1zw,
+  lineskip=-0.5ex
+}
+
+\title{{ソフト実験}\\実験後期第1回レポート}
+\author{6119019056 山口力也}
+\date{2019/10/15日提出}
+\begin{document}
+\maketitle
+\section{仕様解説,使用方法}
+\subsection{program1}
+サーバー側ではソケット通信のセットアップとデータを送る関数,受け取る関数,クライアントを識別しメッセージを全体,個別に送る関数などで構成されている. \\
+クライアント側ではセットアップとデータを送る関数,受け取る関数などは同様に構成されているが,大きく違うのは入力コマンドを受け取る関数がありそれによりメッセージを送るか終了するか判断している.
+クライアントに識別番号を振り分けファイルディスクリプタを用いてそれぞれ連携していると考えられる.
+\subsection{program2}
+課題2はできなかった.
+\subsection{program3}
+課題2ができていないため,課題3も同様にできなかった.
+\section{実装上の工夫点}
+\subsection{program1}
+コメントを打っただけなので特に工夫点はないが,それぞれの動きがわかりやすいようにした.
+\subsection{program2}
+課題2以降はできておらず,コメントしか打っていないので特に工夫点などはない.
+\section{感想}
+色々と調べたがプログラムがどういう動きをしているかよく分からなかった.ファイルディスクリプタがどういうものなのか完璧に理解できていないのが一番の原因だと考えられる.
+もっと理解を深める必要があると考えるため,再提出を強く希望する.
+
+\end{document}
