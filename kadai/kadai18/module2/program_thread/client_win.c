@@ -120,13 +120,17 @@ void WindowEvent(int num)
 					printf("WindowEvent()\n");
 					printf("Button %d is pressed\n",buttonNO);
 #endif
-					if(0<=buttonNO && buttonNO<num){
-						/* 名前の書かれたボタンが押された */
-						SendCircleCommand(buttonNO);
+					if(buttonNO == 0){
+            //グーのボタンが押された
+						SendRockCommand();
 					}
-					else if(buttonNO==num){
-						/* 「All」と書かれたボタンが押された */
-						SendRectangleCommand();
+					if(buttonNO == 1){
+            //チョキのボタンが押された
+						SendScissorsCommand();
+					}
+					if(buttonNO == 2){
+            //グーのボタンが押された
+						SendPaperCommand();
 					}
 					else if(buttonNO==num+1){
 						/* 「End」と書かれたボタンが押された */
@@ -208,6 +212,47 @@ void DrawDiamond(int x,int y,int height)
 	polygonColor(gMainWindow, vx, vy, 5 , 0x000000ff);
 	SDL_Flip(gMainWindow);
 }
+void DrawRock(){
+	  SDL_Surface *image;
+    image = IMG_Load("janken_gu.png"); //画像読み込み
+    SDL_Rect recsrc;
+    recsrc.x = 50;
+    recsrc.y = 50;
+    recsrc.w = 50;
+    recsrc.h = 50;
+		SDL_BlitSurface(image,NULL,gMainWindow,&(recsrc)); //画像のサーフェイスをメインウィンドウのサーフェイスにコピー
+		SDL_FreeSurface(image); //解放
+	  SDL_Flip(gMainWindow); //更新
+}
+
+void DrawScissors(){
+	  SDL_Surface *image;
+    image = IMG_Load("janken_choki.png"); //画像読み込み
+    SDL_Rect recsrc;
+    recsrc.x = 50;
+    recsrc.y = 50;
+    recsrc.w = 50;
+    recsrc.h = 50;
+		SDL_BlitSurface(image,NULL,gMainWindow,&(recsrc)); //画像のサーフェイスをメインウィンドウのサーフェイスにコピー
+		SDL_FreeSurface(image); //解放
+	  SDL_Flip(gMainWindow); //更新
+}
+
+void DrawPaper(){
+
+	  SDL_Surface *image;
+		image = IMG_Load("janken_pa.png"); //画像読み込み
+    SDL_Rect recsrc;
+    recsrc.x = 50;
+    recsrc.y = 50;
+    recsrc.w = 50;
+    recsrc.h = 50;
+		SDL_BlitSurface(image,NULL,gMainWindow,&(recsrc)); //画像のサーフェイスをメインウィンドウのサーフェイスにコピー
+		SDL_FreeSurface(image); //解放
+	  SDL_Flip(gMainWindow); //更新
+}
+
+
 
 /*****
 static

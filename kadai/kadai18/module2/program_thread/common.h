@@ -22,7 +22,8 @@
 
 #define END_COMMAND		'E'		  		/* プログラム終了コマンド */
 #define CIRCLE_COMMAND	'C'				/* 円表示コマンド */
-#define RECT_COMMAND	'R'				/* 四角表示コマンド */
 #define DIAMOND_COMMAND	'D'				/* 菱形表示コマンド */
-
+#define ROCK_COMMAND 'R'				/* グー表示コマンド */
+#define SCISSORS_COMMAND 'S'				/* チョキ表示コマンド */
+#define PAPER_COMMAND 'P'				/* パーコマンド */
 #endif

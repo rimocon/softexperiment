@@ -18,7 +18,6 @@ int main(int argc,char *argv[])
     char	*serverName;
     int		clientID;
 	SDL_Thread	*thr;
-	
     /* 引き数チェック */
     if(argc == 1){
     	serverName = localHostName;
@@ -47,7 +46,7 @@ int main(int argc,char *argv[])
 	
 	/* メインイベントループ */
     while(endFlag){
-		WindowEvent(num);
+		WindowEvent(num); 
     };
 
     /* 終了処理 */

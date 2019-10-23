@@ -22,11 +22,15 @@ extern void WindowEvent(int num);
 extern void DrawRectangle(int x,int y,int width,int height);
 extern void DrawCircle(int x,int y,int r);
 extern void DrawDiamond(int x,int y,int height);
-
+extern void DrawRock(void);
+extern void DrawScissors(void);
+extern void DrawPaper(void);
 /* client_command.c */
 extern int ExecuteCommand(char command);
 extern void SendRectangleCommand(void);
 extern void SendCircleCommand(int pos);
 extern void SendEndCommand(void);
-
+extern void SendRockCommand(void);
+extern void SendScissorsCommand(void);
+extern void SendPaperCommand(void);
 #endif

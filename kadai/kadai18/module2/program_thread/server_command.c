@@ -61,22 +61,37 @@ int ExecuteCommand(char command,int pos)
 			/* 指定されたクライアントに送る */
 			SendData(intData,data,dataSize);
 			break;
-	    case RECT_COMMAND:
+	    case ROCK_COMMAND: //グーの場合
+      dataSize = 0; //キャスト
+			/* コマンドのセット */
+			SetCharData2DataBlock(data,command,&dataSize);
+      ////ここに判定用関数
+      intData = judge(pos); //posを送ってintデータとして受け取る
+      SetIntData2DataBlock(data,intData,&dataSize);
+			/* 指定されたクライアントに送る */
+			SendData(pos,data,dataSize);
+      break;
+      case SCISSORS_COMMAND: //チョキの場合
 			dataSize = 0; //キャスト
 			/* コマンドのセット */
 			SetCharData2DataBlock(data,command,&dataSize);
-			/* 四角の左上の x 座標 */
-			SetIntData2DataBlock(data,GetRandomInt(500),&dataSize);
-			/* 四角の左上の y 座標 */
-			SetIntData2DataBlock(data,GetRandomInt(300),&dataSize);
-			/* 四角の横幅 */
-			SetIntData2DataBlock(data,GetRandomInt(100),&dataSize);
-			/* 四角の高さ */
-			SetIntData2DataBlock(data,GetRandomInt(100),&dataSize);
+      ////ここに判定用関数pos = 送られてきたクライアント番号
 
-			/* 全ユーザーに送る */
-			SendData(ALL_CLIENTS,data,dataSize);
-			break;
+
+			/* 指定されたクライアントに送る */
+			SendData(pos,data,dataSize);
+      break;
+      case PAPER_COMMAND: //パーの場合
+			dataSize = 0; //キャスト
+			/* コマンドのセット */
+			SetCharData2DataBlock(data,command,&dataSize);
+      ////ここに判定用関数
+
+			/* 指定されたクライアントに送る */
+			SendData(pos,data,dataSize);
+      break;
+
+
 	    default:
 			/* 未知のコマンドが送られてきた */
 			fprintf(stderr,"0x%02x is not command!\n",command);

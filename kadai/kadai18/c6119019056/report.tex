@@ -1,0 +1,38 @@
+\documentclass{jarticle}
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{here}
+\usepackage{listings,jlisting}
+\usepackage{amsmath}
+
+\lstset{
+  basicstyle={\ttfamily},
+  identifierstyle={\small},
+  commentstyle={\smallitshape},
+  keywordstyle={\small\bfseries},
+  ndkeywordstyle={\small},
+  stringstyle={\small\ttfamily},
+  frame={tb},
+  breaklines=true,
+  columns=[l]{fullflexible},
+  numbers=left,
+  xrightmargin=0zw,
+  xleftmargin=3zw,
+  numberstyle={\scriptsize},
+  stepnumber=1,
+  numbersep=1zw,
+  lineskip=-0.5ex
+}
+
+\title{{ソフト実験}\\実験後期第2回レポート}
+\author{6119019056 山口力也}
+\date{2019/10/21日提出}
+\begin{document}
+\maketitle
+\section{仕様解説,使用方法}
+\subsection{内容}
+画面には「グー」,「チョキ」,「パー]を表す表示がされている.
+ボタンをクリックすることでどれか選ぶことができ,それぞれ選んだものをサーバー側に送り,２つのクライアントから送られてきたデータをサーバー側が判定して判定結果をクライアント側におくる.
+自宅でしようとしたが環境構築ができずに「グー」と「チョキ」と「パー」の画面表示と送るところまではできたが判定までには至らなかったので後日再提出することを希望する.
+\section{感想}
+サーバーの基本的構造が理解しやすいようにコメントがされていてとてもわかりやすかった.
+\end{document}

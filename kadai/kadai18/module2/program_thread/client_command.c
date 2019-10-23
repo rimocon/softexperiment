@@ -35,40 +35,30 @@ int ExecuteCommand(char command)
 	    case CIRCLE_COMMAND:
 			RecvCircleData();
 			break;
-		case RECT_COMMAND:
-			RecvRectangleData();
-			break;
 		case DIAMOND_COMMAND:
 			RecvDiamondData();
 			break;
+		case ROCK_COMMAND:
+      //RecvResultData();
+      /*RecvResultData(){
+        int result;
+        RecvIntData(&result);
+        if (result==1){ //kati
+          Drawwin();
+        }
+        的なの
+        */
+      DrawRock();
+      break;
+		case SCISSORS_COMMAND:
+      DrawScissors();
+      break;
+    case PAPER_COMMAND:
+      DrawPaper();
+      break;
     }
     return endFlag;
 }
-
-/*****************************************************************
-関数名	: SendRectangleCommand
-機能	: クライアントに四角を表示させるために，
-		  サーバーにデータを送る
-引数	: なし
-出力	: なし
-*****************************************************************/
-void SendRectangleCommand(void)
-{   
-    unsigned char	data[MAX_DATA];
-    int			dataSize;
-
-#ifndef NDEBUG
-    printf("#####\n");
-    printf("SendRectangleCommand()\n");
-#endif
-    dataSize = 0;
-    /* コマンドのセット */
-    SetCharData2DataBlock(data,RECT_COMMAND,&dataSize);
-
-    /* データの送信 */
-    SendData(data,dataSize);
-}
-
 /*****************************************************************
 関数名	: SendCircleCommand
 機能	: クライアントに円を表示させるために，
@@ -97,9 +87,90 @@ void SendCircleCommand(int pos)
     SetIntData2DataBlock(data,pos,&dataSize);
 
     /* データの送信 */
-    SendData(data,dataSize);
+    SendData(data,dataSize); 
 }
+/*****************************************************************
+関数名	: SendRockCommand
+機能	: サーバーにグーのデータを送る
+引数	: なし
+出力	: なし
+*****************************************************************/
 
+void SendRockCommand()
+{
+  unsigned char data[MAX_DATA];
+  int dataSize;
+  
+   /* 引き数チェック */
+  assert(0<=clientID && clientID<MAX_CLIENTS);
+#ifndef NDEBUG
+    printf("#####\n");
+    printf("SendRockCommand()\n");
+    printf("Send Rock Command to %d\n",pos);
+#endif
+
+    dataSize = 0;
+    /* コマンドのセット */
+    SetCharData2DataBlock(data,ROCK_COMMAND,&dataSize);
+    /*送信元のクライアント番号のセット */
+
+    /* データの送信 */
+    SendData(data,dataSize); 
+}
+/*****************************************************************
+関数名	: SendScissorsCommand
+機能	: サーバーにチョキのデータを送る
+引数	: なし
+出力	: なし
+*****************************************************************/
+void SendScissorsCommand()
+{
+  unsigned char data[MAX_DATA];
+  int dataSize;
+  
+   /* 引き数チェック */
+  assert(0<=clientID && clientID<MAX_CLIENTS);
+#ifndef NDEBUG
+    printf("#####\n");
+    printf("SendRockCommand()\n");
+    printf("Send Rock Command to %d\n",pos);
+#endif
+
+    dataSize = 0;
+    /* コマンドのセット */
+    SetCharData2DataBlock(data,SCISSORS_COMMAND,&dataSize);
+    /*送信元のクライアント番号のセット */
+
+    /* データの送信 */
+    SendData(data,dataSize); 
+}
+/*****************************************************************
+関数名	: SendPaperCommand
+機能	: サーバーにチョキのデータを送る
+引数	: なし
+出力	: なし
+*****************************************************************/
+void SendPaperCommand()
+{
+  unsigned char data[MAX_DATA];
+  int dataSize;
+  
+   /* 引き数チェック */
+  assert(0<=clientID && clientID<MAX_CLIENTS);
+#ifndef NDEBUG
+    printf("#####\n");
+    printf("SendRockCommand()\n");
+    printf("Send Rock Command to %d\n",pos);
+#endif
+
+    dataSize = 0;
+    /* コマンドのセット */
+    SetCharData2DataBlock(data,PAPER_COMMAND,&dataSize);
+    /*送信元のクライアント番号のセット */
+
+    /* データの送信 */
+    SendData(data,dataSize); 
+}
 /*****************************************************************
 関数名	: SendEndCommand
 機能	: プログラムの終了を知らせるために，
@@ -211,7 +282,7 @@ static void RecvRectangleData(void)
 }
 
 /*****************************************************************
-関数名	: RecviDiamondData
+関数名	: RecvDiamondData
 機能	: 菱形を表示するためのデータを受信し，表示する
 引数	: なし
 出力	: なし
@@ -227,4 +298,24 @@ static void RecvDiamondData(void)
 
     /* 菱形を表示する */
     DrawDiamond(x,y,height);
+}
+
+/*****************************************************************
+関数名	: RecvResultData
+機能	: じゃんけんの結果のデータを受信する
+引数	: なし
+出力	: なし
+*****************************************************************/
+static void RecvResultData(void) {
+  int result;
+  RecvIntData(&result);
+  if(result==0){ //勝ち
+    DrawWin();
+  }
+  else if(result==1){ //負け
+    DrawLose();
+  }
+  else if(result==2){ //引き分け
+    DrawDraw();
+  }
 }
