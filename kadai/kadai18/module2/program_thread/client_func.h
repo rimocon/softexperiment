@@ -25,6 +25,9 @@ extern void DrawDiamond(int x,int y,int height);
 extern void DrawRock(void);
 extern void DrawScissors(void);
 extern void DrawPaper(void);
+extern void Drawwin(void);
+extern void Drawlose(void);
+extern void Drawdraw(void);
 /* client_command.c */
 extern int ExecuteCommand(char command);
 extern void SendRectangleCommand(void);

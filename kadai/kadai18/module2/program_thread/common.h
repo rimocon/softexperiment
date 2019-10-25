@@ -22,8 +22,10 @@
 
 #define END_COMMAND		'E'		  		/* プログラム終了コマンド */
 #define CIRCLE_COMMAND	'C'				/* 円表示コマンド */
-#define DIAMOND_COMMAND	'D'				/* 菱形表示コマンド */
 #define ROCK_COMMAND 'R'				/* グー表示コマンド */
 #define SCISSORS_COMMAND 'S'				/* チョキ表示コマンド */
 #define PAPER_COMMAND 'P'				/* パーコマンド */
+#define WIN 'W'		//勝ち
+#define LOSE 'L'		//負け
+#define DRAW 'D'		//引き分け
 #endif

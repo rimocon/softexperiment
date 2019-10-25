@@ -9,7 +9,8 @@
 static void SetIntData2DataBlock(void *data,int intData,int *dataSize);
 static void SetCharData2DataBlock(void *data,char charData,int *dataSize);
 static int GetRandomInt(int n);
-
+static void judge(int command0,int command1);
+static void waitclient(int pos,int command);
 /*****************************************************************
 関数名	: ExecuteCommand
 機能	: クライアントから送られてきたコマンドを元に，
@@ -62,35 +63,15 @@ int ExecuteCommand(char command,int pos)
 			SendData(intData,data,dataSize);
 			break;
 	    case ROCK_COMMAND: //グーの場合
-      dataSize = 0; //キャスト
-			/* コマンドのセット */
-			SetCharData2DataBlock(data,command,&dataSize);
       ////ここに判定用関数
-      intData = judge(pos); //posを送ってintデータとして受け取る
-      SetIntData2DataBlock(data,intData,&dataSize);
-			/* 指定されたクライアントに送る */
-			SendData(pos,data,dataSize);
+        waitclient(pos,0); //他のクライアントを待つ
       break;
       case SCISSORS_COMMAND: //チョキの場合
-			dataSize = 0; //キャスト
-			/* コマンドのセット */
-			SetCharData2DataBlock(data,command,&dataSize);
-      ////ここに判定用関数pos = 送られてきたクライアント番号
-
-
-			/* 指定されたクライアントに送る */
-			SendData(pos,data,dataSize);
+        waitclient(pos,1); //他のクライアントを待つ
       break;
       case PAPER_COMMAND: //パーの場合
-			dataSize = 0; //キャスト
-			/* コマンドのセット */
-			SetCharData2DataBlock(data,command,&dataSize);
-      ////ここに判定用関数
-
-			/* 指定されたクライアントに送る */
-			SendData(pos,data,dataSize);
+        waitclient(pos,2);
       break;
-
 
 	    default:
 			/* 未知のコマンドが送られてきた */
@@ -155,4 +136,60 @@ static void SetCharData2DataBlock(void *data,char charData,int *dataSize)
 static int GetRandomInt(int n)
 {
     return rand()%n;
+}
+
+static void waitclient(int pos,int command)
+{
+  int flag0;
+  int flag1;
+  int command0;
+  int command1;
+
+  if(pos == 0) { //クライアント0の方セット
+    flag0 = 1;
+    command0 = command;
+    fprintf(stderr,"client0 set\n");
+  }
+  else if(pos == 1) { //クライアント1の方セット
+    flag1 = 1;
+    command1 = command;
+    fprintf(stderr,"client1 set\n");
+  }
+  if(flag0 == 1 && flag1 == 1) { //どっちからも送られてきたら判定
+    
+    fprintf(stderr,"judge start\n");
+    judge(command0,command1);
+    flag0 = 0;
+    flag1 = 0;
+  }
+}
+static void judge(int command0,int command1){
+  int result;
+  unsigned char	data1[MAX_DATA];
+  unsigned char	data2[MAX_DATA];
+	int dataSize = 0; //キャスト
+  result = (command0 - command1 +3) % 3; 
+  switch(result){
+  case 2: //1勝ち2負け
+    SetCharData2DataBlock(data1,WIN,&dataSize);
+	  SendData(0,data1,dataSize);
+    SetCharData2DataBlock(data2,LOSE,&dataSize);
+    SendData(1,data2,dataSize);
+    fprintf(stderr,"1win2lose\n");
+    break;
+  case 1: //1負け2勝ち
+    SetCharData2DataBlock(data1,LOSE,&dataSize);
+	  SendData(0,data1,dataSize);
+    SetCharData2DataBlock(data2,WIN,&dataSize);
+    SendData(1,data2,dataSize);
+    fprintf(stderr,"1lose2win\n");
+    break;
+  case 0://あいこ
+    SetCharData2DataBlock(data1,DRAW,&dataSize);
+    SendData(ALL_CLIENTS,data1,dataSize);
+    fprintf(stderr,"draw\n");
+    break;
+  }
+  fprintf(stderr,"data1= %s \n",data1);
+  fprintf(stderr,"data2= %s \n",data2);
 }

@@ -252,8 +252,47 @@ void DrawPaper(){
 	  SDL_Flip(gMainWindow); //更新
 }
 
+void Drawwin(){
+
+	  SDL_Surface *image;
+		image = IMG_Load("win.png"); //画像読み込み
+    SDL_Rect recsrc;
+    recsrc.x = 50;
+    recsrc.y = 50;
+    recsrc.w = 50;
+    recsrc.h = 50;
+		SDL_BlitSurface(image,NULL,gMainWindow,&(recsrc)); //画像のサーフェイスをメインウィンドウのサーフェイスにコピー
+		SDL_FreeSurface(image); //解放
+	  SDL_Flip(gMainWindow); //更新
+}
 
 
+void Drawlose(){
+
+	  SDL_Surface *image;
+		image = IMG_Load("lose.png"); //画像読み込み
+    SDL_Rect recsrc;
+    recsrc.x = 50;
+    recsrc.y = 50;
+    recsrc.w = 50;
+    recsrc.h = 50;
+		SDL_BlitSurface(image,NULL,gMainWindow,&(recsrc)); //画像のサーフェイスをメインウィンドウのサーフェイスにコピー
+		SDL_FreeSurface(image); //解放
+	  SDL_Flip(gMainWindow); //更新
+}
+void Drawdraw(){
+
+	  SDL_Surface *image;
+		image = IMG_Load("kabuto.png"); //画像読み込み
+    SDL_Rect recsrc;
+    recsrc.x = 50;
+    recsrc.y = 50;
+    recsrc.w = 50;
+    recsrc.h = 50;
+		SDL_BlitSurface(image,NULL,gMainWindow,&(recsrc)); //画像のサーフェイスをメインウィンドウのサーフェイスにコピー
+		SDL_FreeSurface(image); //解放
+	  SDL_Flip(gMainWindow); //更新
+}
 /*****
 static
 *****/

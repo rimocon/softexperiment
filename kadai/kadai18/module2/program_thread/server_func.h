@@ -18,5 +18,4 @@ extern int SendRecvManager(void);
 /* server_command.c */
 extern int ExecuteCommand(char command,int pos);
 extern void SendDiamondCommand(void);
-
 #endif

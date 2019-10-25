@@ -32,22 +32,10 @@ int ExecuteCommand(char command)
 		case END_COMMAND:
 			endFlag = 0;
 			break;
-	    case CIRCLE_COMMAND:
+	  case CIRCLE_COMMAND:
 			RecvCircleData();
 			break;
-		case DIAMOND_COMMAND:
-			RecvDiamondData();
-			break;
 		case ROCK_COMMAND:
-      //RecvResultData();
-      /*RecvResultData(){
-        int result;
-        RecvIntData(&result);
-        if (result==1){ //kati
-          Drawwin();
-        }
-        的なの
-        */
       DrawRock();
       break;
 		case SCISSORS_COMMAND:
@@ -55,6 +43,15 @@ int ExecuteCommand(char command)
       break;
     case PAPER_COMMAND:
       DrawPaper();
+      break;
+    case WIN:
+      Drawwin();
+      break;
+    case DRAW:
+      Drawdraw();
+      break;
+    case LOSE:
+      Drawlose();
       break;
     }
     return endFlag;
@@ -300,22 +297,3 @@ static void RecvDiamondData(void)
     DrawDiamond(x,y,height);
 }
 
-/*****************************************************************
-関数名	: RecvResultData
-機能	: じゃんけんの結果のデータを受信する
-引数	: なし
-出力	: なし
-*****************************************************************/
-static void RecvResultData(void) {
-  int result;
-  RecvIntData(&result);
-  if(result==0){ //勝ち
-    DrawWin();
-  }
-  else if(result==1){ //負け
-    DrawLose();
-  }
-  else if(result==2){ //引き分け
-    DrawDraw();
-  }
-}
